@@ -130,7 +130,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &82114618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -311,6 +311,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e722a81ecacd4a4b95d3f415a8bf7b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 1773131083}
+  timeLabel: {fileID: 1966176014}
+  scoreLabel: {fileID: 1280697454}
 --- !u!114 &762180254
 MonoBehaviour:
   m_ObjectHideFlags: 0
