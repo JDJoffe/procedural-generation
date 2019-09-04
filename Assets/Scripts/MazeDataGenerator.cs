@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MazeDataGenerator : MonoBehaviour
+public class MazeDataGenerator 
 {
     public float placementThreshold;
 

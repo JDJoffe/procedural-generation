@@ -14,6 +14,35 @@ public class MazeConstructor : MonoBehaviour
     private MazeMeshGenerator meshGenerator;
     private MazeDataGenerator dataGenerator;
 
+
+    public float hallWidth
+    {
+        get; private set;
+    }
+    public float hallHeight
+    {
+        get; private set;
+    }
+
+    public int startRow
+    {
+        get; private set;
+    }
+    public int startCol
+    {
+        get; private set;
+    }
+
+    public int goalRow
+    {
+        get; private set;
+    }
+    public int goalCol
+    {
+        get; private set;
+    }
+
+
     public int[,] data
     {
         get; private set;
@@ -32,14 +61,29 @@ public class MazeConstructor : MonoBehaviour
         };
     }
 
-    public void GenerateNewMaze(int sizeRows, int sizeCols)
+    public void GenerateNewMaze(int sizeRows, int sizeCols,
+    TriggerEventHandler startCallback = null, TriggerEventHandler goalCallback = null)
     {
         if (sizeRows % 2 == 0 && sizeCols % 2 == 0)
         {
             Debug.LogError("Odd numbers work better for dungeon size.");
         }
+
+        DisposeOldMaze();
+
         data = dataGenerator.FromDimensions(sizeRows, sizeCols);
+
+        FindStartPosition();
+        FindGoalPosition();
+
+        // store values used to generate this mesh
+        hallWidth = meshGenerator.width;
+        hallHeight = meshGenerator.height;
+
         DisplayMaze();
+
+        PlaceStartTrigger(startCallback);
+        PlaceGoalTrigger(goalCallback);
     }
 
     private void OnGUI()
@@ -88,5 +132,82 @@ public class MazeConstructor : MonoBehaviour
 
         MeshRenderer mr = go.AddComponent<MeshRenderer>();
         mr.materials = new Material[2] { mazeMat1, mazeMat2 };
+    }
+
+    public void DisposeOldMaze()
+    {
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("Generated");
+        foreach (GameObject go in objects)
+        {
+            Destroy(go);
+        }
+    }
+
+    void FindStartPosition()
+    {
+        int[,] maze = data;
+        int rMax = maze.GetUpperBound(0);
+        int cMax = maze.GetUpperBound(1);
+
+        for (int i = 0; i <= rMax; i++)
+        {
+            for (int j = 0; j <= cMax; j++)
+            {
+                if (maze[i,j] == 0)
+                {
+                    startRow = 1;
+                    startCol = j;
+                    return;
+                }
+            }
+        }
+    }
+
+    void FindGoalPosition()
+    {
+        int[,] maze = data;
+        int rMax = maze.GetUpperBound(0);
+        int cMax = maze.GetUpperBound(1);
+
+        for (int i = rMax; i >= 0; i--)
+        {
+            for (int j = cMax; j >= 0; j--)
+            {
+                if (maze[i,j]==0)
+                {
+                    goalRow = 1;
+                    goalCol = j;
+                    return;
+                }
+            }
+        }
+    }
+
+    void PlaceStartTrigger(TriggerEventHandler callback)
+    {
+        GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        go.transform.position = new Vector3(startCol * hallWidth, .5f, startRow * hallWidth);
+        go.name = "Start Trigger";
+        go.tag = "Generated";
+
+        go.GetComponent<BoxCollider>().isTrigger = true;
+        go.GetComponent<MeshRenderer>().sharedMaterial = startMat;
+
+        TriggerEventRouter tc = go.AddComponent<TriggerEventRouter>();
+        tc.callback = callback;
+    }
+
+    private void PlaceGoalTrigger(TriggerEventHandler callback)
+    {
+        GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        go.transform.position = new Vector3(goalCol * hallWidth, .5f, goalRow * hallWidth);
+        go.name = "Treasure";
+        go.tag = "Generated";
+
+        go.GetComponent<BoxCollider>().isTrigger = true;
+        go.GetComponent<MeshRenderer>().sharedMaterial = treasureMat;
+
+        TriggerEventRouter tc = go.AddComponent<TriggerEventRouter>();
+        tc.callback = callback;
     }
 }
