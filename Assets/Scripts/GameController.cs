@@ -6,44 +6,44 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-    //1
+    #region var   
     [SerializeField] private FpsMovement player;
     [SerializeField] private Text timeLabel;
     [SerializeField] private Text scoreLabel;
-
-    private MazeConstructor generator;
-
-    //2
+    private MazeConstructor generator;  
     private DateTime startTime;
     private int timeLimit;
     private int reduceLimitBy;
-
     private int score;
     private bool goalReached;
-
-    //3
+    #endregion
+    
     void Start()
     {
+        // script ref
         generator = GetComponent<MazeConstructor>();
+        // cal func
         StartNewGame();
     }
 
-    //4
+    // set var values
     private void StartNewGame()
     {
         timeLimit = 80;
         reduceLimitBy = 5;
+        // for getting the players completion time 
         startTime = DateTime.Now;
 
         score = 0;
         scoreLabel.text = score.ToString();
-
+        // call func
         StartNewMaze();
     }
 
-    //5
+    
     private void StartNewMaze()
     {
+        // call func from other script and input data
         generator.GenerateNewMaze(13, 15, OnStartTrigger, OnGoalTrigger);
 
         float x = generator.startCol * generator.hallWidth;
@@ -59,7 +59,7 @@ public class GameController : MonoBehaviour
         startTime = DateTime.Now;
     }
 
-    //6
+    
     void Update()
     {
         if (!player.enabled)
@@ -83,7 +83,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    //7
+    
     private void OnGoalTrigger(GameObject trigger, GameObject other)
     {
         Debug.Log("Goal!");

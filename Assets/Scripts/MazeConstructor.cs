@@ -60,13 +60,14 @@ public class MazeConstructor : MonoBehaviour
             {1,1,1}
         };
     }
-
+    // parameter data taken form gamecontroller
     public void GenerateNewMaze(int sizeRows, int sizeCols,
     TriggerEventHandler startCallback = null, TriggerEventHandler goalCallback = null)
     {
+        // if the ints are divisible by 2
         if (sizeRows % 2 == 0 && sizeCols % 2 == 0)
         {
-            Debug.LogError("Odd numbers work better for dungeon size.");
+            Debug.LogError("Odd numbers work better for dungeon size.");           
         }
 
         DisposeOldMaze();
