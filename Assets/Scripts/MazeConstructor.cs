@@ -10,7 +10,7 @@ public class MazeConstructor : MonoBehaviour
     [SerializeField] private Material mazeMat2;
     [SerializeField] private Material startMat;
     [SerializeField] private Material treasureMat;
-
+    // script ref
     private MazeMeshGenerator meshGenerator;
     private MazeDataGenerator dataGenerator;
 
@@ -53,6 +53,7 @@ public class MazeConstructor : MonoBehaviour
         dataGenerator = new MazeDataGenerator();
         meshGenerator = new MazeMeshGenerator();
         // default walls surrounding a single empty cell
+        // empty cell is area the player can move around in, dont generate a mesh here
         data = new int[,]
         {
             {1,1,1},
@@ -60,18 +61,24 @@ public class MazeConstructor : MonoBehaviour
             {1,1,1}
         };
     }
-    // parameter data taken form gamecontroller
+    // parameters data taken form gamecontroller
     public void GenerateNewMaze(int sizeRows, int sizeCols,
     TriggerEventHandler startCallback = null, TriggerEventHandler goalCallback = null)
     {
-        // if the ints are divisible by 2
-        if (sizeRows % 2 == 0 && sizeCols % 2 == 0)
-        {
-            Debug.LogError("Odd numbers work better for dungeon size.");           
+        // if the ints are divisible by 2, log an error & reduce by one to prevent errors
+        if (sizeRows % 2 == 0 )
+        {          
+            sizeRows--;
+            Debug.Log(sizeRows + " Odd numbers work better for dungeon size.");
         }
-
+        if (sizeCols % 2 == 0)
+        {          
+            sizeCols--;
+            Debug.Log(sizeCols + " Odd numbers work better for dungeon size.");
+        }
+        // run func
         DisposeOldMaze();
-
+        // data is equal to the fromdimensions func output with the sizerows and sizecols parameters from gamecontroller
         data = dataGenerator.FromDimensions(sizeRows, sizeCols);
 
         FindStartPosition();
@@ -137,19 +144,21 @@ public class MazeConstructor : MonoBehaviour
 
     public void DisposeOldMaze()
     {
+        // destroy al previously generated objects
         GameObject[] objects = GameObject.FindGameObjectsWithTag("Generated");
         foreach (GameObject go in objects)
         {
             Destroy(go);
         }
     }
-
+    // start at 0,0 and search through maze data to find an open area to store the start position in
     void FindStartPosition()
-    {
+    {       
+        // array? = data
         int[,] maze = data;
         int rMax = maze.GetUpperBound(0);
         int cMax = maze.GetUpperBound(1);
-
+        // nested for loop for searching
         for (int i = 0; i <= rMax; i++)
         {
             for (int j = 0; j <= cMax; j++)
@@ -163,13 +172,14 @@ public class MazeConstructor : MonoBehaviour
             }
         }
     }
-
+    // start at max values and search backwards to find an open space to store the goal position in
     void FindGoalPosition()
     {
+        // get data
         int[,] maze = data;
         int rMax = maze.GetUpperBound(0);
         int cMax = maze.GetUpperBound(1);
-
+        // nested for loop for searching
         for (int i = rMax; i >= 0; i--)
         {
             for (int j = cMax; j >= 0; j--)
@@ -183,7 +193,7 @@ public class MazeConstructor : MonoBehaviour
             }
         }
     }
-
+    // intantiate 
     void PlaceStartTrigger(TriggerEventHandler callback)
     {
         GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);

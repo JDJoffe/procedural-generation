@@ -314,6 +314,8 @@ MonoBehaviour:
   player: {fileID: 1773131083}
   timeLabel: {fileID: 1966176014}
   scoreLabel: {fileID: 1280697454}
+  rows: 21
+  collumns: 24
 --- !u!114 &762180254
 MonoBehaviour:
   m_ObjectHideFlags: 0

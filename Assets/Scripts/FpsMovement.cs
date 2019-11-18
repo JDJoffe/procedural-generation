@@ -35,6 +35,9 @@ public class FpsMovement : MonoBehaviour
     #region move
     private void MoveCharacter()
     {
+        // i am speed
+        if (Input.GetKey(KeyCode.LeftShift)){ speed = 9f; }
+        else { speed = 6; }
         // input get axises
         float deltaX = Input.GetAxis("Horizontal") * speed;
         float deltaZ = Input.GetAxis("Vertical") * speed;
