@@ -9,6 +9,7 @@ public class MazeMeshGenerator
 
     public MazeMeshGenerator()
     {
+        // set var
         width = 3.75f;
         height = 3.5f;
     }

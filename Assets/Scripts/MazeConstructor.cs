@@ -87,7 +87,7 @@ public class MazeConstructor : MonoBehaviour
         // store values used to generate this mesh
         hallWidth = meshGenerator.width;
         hallHeight = meshGenerator.height;
-
+        // run function that adds colliders, meshrenderers etc to new gameobjects
         DisplayMaze();
 
         PlaceStartTrigger(startCallback);
@@ -96,6 +96,7 @@ public class MazeConstructor : MonoBehaviour
 
     private void OnGUI()
     {
+        // return if false
         if (!showDebug)
         {
             return;
@@ -106,38 +107,46 @@ public class MazeConstructor : MonoBehaviour
         int cMax = maze.GetUpperBound(1);
 
         string msg = "";
-
+        // nested for loop
+        // i(rmax) is more or = to 0 --
         for (int i = rMax; i >= 0; i--)
         {
+            // j is less or = cmax ++
             for (int j = 0; j <= cMax; j++)
             {
+                // i and j are 0
                 if (maze[i, j] == 0)
                 {
                     msg += "....";
                 }
+                // else
                 else
                 {
                     msg += "==";
                 }
             }
+            // new line
             msg += "\n";
         }
+        // create a gui message on screen at 20 20 size 500 500
         GUI.Label(new Rect(20, 20, 500, 500), msg);
     }
 
     private void DisplayMaze()
     {
+        // new gameobject
         GameObject go = new GameObject();
+        // set name and tag
         go.transform.position = Vector3.zero;
         go.name = "Procedural Maze";
         go.tag = "Generated";
-
+        // apply mesh and meshfilter
         MeshFilter mf = go.AddComponent<MeshFilter>();
         mf.mesh = meshGenerator.FromData(data);
-
+        // add collider
         MeshCollider mc = go.AddComponent<MeshCollider>();
         mc.sharedMesh = mf.mesh;
-
+        // add meshrenderer and set material
         MeshRenderer mr = go.AddComponent<MeshRenderer>();
         mr.materials = new Material[2] { mazeMat1, mazeMat2 };
     }
